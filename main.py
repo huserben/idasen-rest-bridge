@@ -82,7 +82,7 @@ def delete_stand():
 
 
 @app.route("/move/stand", methods=['POST'])
-def move_sit():
+def move_stand():
     print("Moving to stand position")
     output = run_idasen_command("stand")
     print(output)
