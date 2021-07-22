@@ -4,34 +4,107 @@ from subprocess import Popen, PIPE
 
 app = Flask(__name__)
 
+
 @app.route("/init", methods=['POST'])
 def init():
-    process = Popen(["idasen", "init"], stdout=PIPE)
-    (output, err) = process.communicate()
-    exit_code = process.wait()
-    return output.decode("utf-8")
+    print("Starting idasen init...")
+    output = run_idasen_command("init")
+    print(output)
+
+    return output
+
 
 @app.route("/toggle", methods=['POST'])
 def toggle():
-    current_height = get_height()
+    print("Toggling Desk Position")
+    current_height = get_desk_height()
 
     if current_height > 1.0:
         print("Desk is up, will move to sitting position")
-        subprocess.run(["idasen", "sit"])
+        output = run_idasen_command("sit")
+        print(output)
     else:
         print("Desk is down, will move to standing position")
-        subprocess.run(["idasen", "stand"])
+        output = run_idasen_command("stand")
+        print(output)
 
     return get_height()
 
+
 @app.route("/height", methods=['GET'])
 def get_height():
-    process = Popen(["idasen", "height"], stdout=PIPE)
+    return str(get_desk_height())
+
+
+@app.route("/move/sit", methods=['POST'])
+def move_sit():
+    print("Moving to sitting position")
+    output = run_idasen_command("sit")
+    print(output)
+
+    return output
+
+
+@app.route("/sit", methods=['POST'])
+def save_sit():
+    print("Saving current position as sit position")
+    output = run_idasen_command("save sit")
+    print(output)
+
+    return output
+
+
+@app.route("/sit", methods=['DELETE'])
+def delete_sit():
+    print("Delete saved sitting position")
+    output = run_idasen_command("delete sit")
+    print(output)
+
+    return output
+
+
+@app.route("/stand", methods=['POST'])
+def save_stand():
+    print("Saving current position as standing position")
+    output = run_idasen_command("save stand")
+    print(output)
+
+    return output
+
+
+@app.route("/stand", methods=['DELETE'])
+def delete_stand():
+    print("Delete saved standing position")
+    output = run_idasen_command("delete stand")
+    print(output)
+
+    return output
+
+
+@app.route("/move/stand", methods=['POST'])
+def move_sit():
+    print("Moving to stand position")
+    output = run_idasen_command("stand")
+    print(output)
+
+    return output
+
+
+def get_desk_height():
+    print("Getting current desk height...")
+    output = run_idasen_command("height")
+    desk_height = output.split(' ')[0]
+
+    print(desk_height)
+    return float(desk_height)
+
+
+def run_idasen_command(command):
+    process = Popen(["idasen", command], stdout=PIPE)
     (output, err) = process.communicate()
     exit_code = process.wait()
 
-    current_height = float(output.decode("utf-8").split(' ')[0])
-    return current_height
+    return output.decode("utf-8")
 
 
 if __name__ == '__main__':
