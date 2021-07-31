@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, abort
 from flask_restplus import Api, Resource
 from subprocess import Popen, PIPE
 
@@ -24,6 +24,14 @@ def run_idasen_command(command_arguments):
     exit_code = process.wait()
 
     return output.decode("utf-8")
+
+def get_position_name():
+    position_name = request.args.get('position_name')
+
+    if (position_name == None):
+        abort(400, "Missing argument position_name")
+
+    return position_name       
 
 
 @name_space.route("/init", methods=['POST'])
@@ -70,7 +78,8 @@ class Position(Resource):
         params={'position_name': "The position to save"},
         responses={200: "Save current desk height for specified position"})
     def post(self):
-        position_name = request.args.get('position_name')
+        position_name = get_position_name()
+
         print("Saving current position as position for {0}".format(position_name))
         output = run_idasen_command(["save", position_name])
         print(output)
@@ -81,7 +90,7 @@ class Position(Resource):
         params={'position_name': "The position to delete"},
         responses={200: "Delete saved position for specified position"})
     def delete(self):
-        position_name = request.args.get('position_name')
+        position_name = get_position_name()
         print("Delete saved position for {0}".format(position_name))
         output = run_idasen_command(["delete", position_name])
         print(output)
@@ -92,7 +101,7 @@ class Position(Resource):
         params={'position_name': "The position to move to"},
         responses={200: "Moves desk to height specified for the given position"})
     def put(self):
-        position_name = request.args.get('position_name')
+        position_name = get_position_name()
         print("Moving to heigh for {0} position".format(position_name))
         output = run_idasen_command([position_name])
         print(output)
