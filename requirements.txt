@@ -1,2 +1,4 @@
 idasen
 Flask
+flask_restplus
+werkzeug==0.16.1
