@@ -10,7 +10,7 @@ Then run the application:
 
 You can reach the API on port [5000 on localhost](http://localhost:5000). There is a swagger API to test out the commands.
 
-![Swagger Overview](https://user-images.githubusercontent.com/5486874/127734589-bcb15d8f-dbb9-46f5-8781-de03f5216978.png)
+![Swagger Overview](https://user-images.githubusercontent.com/5486874/127738235-b0c79343-dcd9-4ca7-8891-0af64358490c.png)
 ![Swagger Execution](https://user-images.githubusercontent.com/5486874/127734608-02869956-7864-4eb3-a18c-b631cb911c13.png)
 
 
@@ -31,12 +31,17 @@ For more details you can check out the [configuration section](https://github.co
 Once this works you can should be able to get the current desk height by issuing a `GET` to `/height`. If this returns the current height, the connection works.
 
 ### Save Positions
-Next you want to manually setup your standing and sitting positions by manually adjusting the desk height. Once you've found something comfortable for you, you can save the current height with `POST` requests to `/sit` and `/stand`.  
+Next you want to manually setup your standing and sitting positions by manually adjusting the desk height. Once you've found something comfortable for you, you can save the current height with `POST` requests to `/position` and specify the `position_name` under which they are saved.  
+The default positions are `sit` and `stand`, but you can use whatever you want.
 
-A new `POST` request to `/sit` or `/stand` will override the existing values, while a `DELETE` to those endpoints will delete the saved positions.
+A new `POST` request to `/position` will override the existing values if they already exist, while a `DELETE` to this endpoint will delete the saved position.
 
 ### Move Desk
-You can move your desk to the predefined positions in two ways. Either directly to stand or move with a `POST` to `/move/sit` or `/move/stand_`. Or via `POST` to `/toggle`. Toggle will check the current desk height, and move it to the saved standing position if the current height is below 1m. If it's above it it will move it to the sitting position.
+You can move your desk to the predefined positions in two ways. Either directly with a `POST` to `/height` with the specific `position_name`.  
+
+Or via `POST` to `/toggle`. You *can* specify the two positions you want to toggle between by specifying `sit_position` and `stand_position`. If they are not supplied, `sit` or respectively `stand` will be used.
+
+Toggle will check the current desk height, and move it to standing position if the current height is below 1m. If it's above it it will move it to the sitting position.
 
 ## Acknowledgements
 Thanks to [newAM](https://github.com/newAM) for creating the [idasen](https://github.com/newAM/idasen) package which this REST API is fully based on.
