@@ -25,6 +25,11 @@ def run_idasen_command(command_arguments):
 
     return output.decode("utf-8")
 
+def move_desk_to_position(position_name):
+    print("Moving to heigh for {0} position".format(position_name))
+    output = run_idasen_command([position_name])
+    return output
+
 def get_position_name():
     position_name = request.args.get('position_name')
 
@@ -58,9 +63,9 @@ class Toggle(Resource):
         current_height = get_desk_height()
 
         if current_height > 1.0:
-            Position().put(sit_position)
+            move_desk_to_position(sit_position)
         else:
-            Position().put(stand_position)
+            move_desk_to_position(stand_position)
 
         return Height().get()
 
@@ -102,8 +107,7 @@ class Position(Resource):
         responses={200: "Moves desk to height specified for the given position"})
     def put(self):
         position_name = get_position_name()
-        print("Moving to heigh for {0} position".format(position_name))
-        output = run_idasen_command([position_name])
+        output = move_desk_to_position(position_name)
         print(output)
 
         return output
