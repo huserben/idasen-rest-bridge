@@ -10,7 +10,7 @@ Then run the application:
 
 You can reach the API on port [5000 on localhost](http://localhost:5000). There is a swagger API to test out the commands.
 
-![Swagger Overview](https://user-images.githubusercontent.com/5486874/127734589-bcb15d8f-dbb9-46f5-8781-de03f5216978.png)
+![Swagger Overview](https://user-images.githubusercontent.com/5486874/127738235-b0c79343-dcd9-4ca7-8891-0af64358490c.png)
 ![Swagger Execution](https://user-images.githubusercontent.com/5486874/127734608-02869956-7864-4eb3-a18c-b631cb911c13.png)
 
 
