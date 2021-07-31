@@ -26,7 +26,7 @@ def run_idasen_command(command_arguments):
     return output.decode("utf-8")
 
 def move_desk_to_position(position_name):
-    print("Moving to heigh for {0} position".format(position_name))
+    print("Moving to height for {0} position".format(position_name))
     output = run_idasen_command([position_name])
     return output
 
@@ -49,7 +49,6 @@ class Init(Resource):
 
         return output
 
-
 @name_space.route("/toggle", methods=['POST'])
 class Toggle(Resource):
     @name_space.doc(
@@ -70,12 +69,21 @@ class Toggle(Resource):
         return Height().get()
 
 
-@name_space.route("/height", methods=['GET'])
+@name_space.route("/height", methods=['GET', 'POST'])
 class Height(Resource):
     @name_space.doc(responses={200: "The current height of the desk"})
     def get(self):
         return str(get_desk_height())
 
+    @name_space.doc(
+        params={'position_name': "The position to move to"},
+        responses={200: "Moves desk to height specified for the given position"})
+    def post(self):
+        position_name = get_position_name()
+        output = move_desk_to_position(position_name)
+        print(output)
+
+        return output
 
 @name_space.route("/position", methods=['POST', 'PUT', 'DELETE'])
 class Position(Resource):
@@ -101,17 +109,6 @@ class Position(Resource):
         print(output)
 
         return output
-
-    @name_space.doc(
-        params={'position_name': "The position to move to"},
-        responses={200: "Moves desk to height specified for the given position"})
-    def put(self):
-        position_name = get_position_name()
-        output = move_desk_to_position(position_name)
-        print(output)
-
-        return output
-
 
 if __name__ == '__main__':
     flask_app.run(debug=True, host='0.0.0.0')
