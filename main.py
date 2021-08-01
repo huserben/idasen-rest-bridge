@@ -42,7 +42,7 @@ def get_position_height(position_name):
     return config["positions"][position_name]
 
 def move_desk_to_position(position_name):
-    print("Moving to height for {0} position".format(position_name))
+    print("Moving to height {0}m for {1} position".format(get_position_height(position_name), position_name))
     run_idasen_command([position_name], False)
 
 def get_position_name():
