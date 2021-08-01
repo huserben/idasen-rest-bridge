@@ -27,9 +27,9 @@ def run_idasen_command(command_arguments, wait_for_exit = True):
     command.extend(command_arguments)
 
     process = Popen(command, stdout=PIPE)
-    (output, err) = process.communicate()
 
-    if (wait_for_exit):
+    if (wait_for_exit):        
+        (output, err) = process.communicate()
         exit_code = process.wait()
         return output.decode("utf-8"), exit_code, err
 
