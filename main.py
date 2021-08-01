@@ -22,15 +22,16 @@ def get_desk_height():
     return float(desk_height)
 
 
-def run_idasen_command(command_arguments):
+def run_idasen_command(command_arguments, wait_for_exit = True):
     command = ["idasen"]
     command.extend(command_arguments)
 
     process = Popen(command, stdout=PIPE)
     (output, err) = process.communicate()
-    exit_code = process.wait()
 
-    return output.decode("utf-8"), exit_code, err
+    if (wait_for_exit):
+        exit_code = process.wait()
+        return output.decode("utf-8"), exit_code, err
 
 def position_exists(position_name):
     config = cli.load_config()
@@ -42,7 +43,7 @@ def get_position_height(position_name):
 
 def move_desk_to_position(position_name):
     print("Moving to height for {0} position".format(position_name))
-    cli.move_to(position=position_name)
+    run_idasen_command([position_name], False)
 
 def get_position_name():
     position_name = request.args.get('position_name')
@@ -60,7 +61,7 @@ def handle_exception(error):
 class Init(Resource):
     @name_space.doc(responses={
         201: "Creates new idasen config file",
-        204: "Config file already exists"})
+        200: "Config file already exists"})
     def post(self):
         print("Starting idasen init...")
         _, exit_code, _ = run_idasen_command(["init"])
@@ -68,7 +69,7 @@ class Init(Resource):
         if (exit_code == 0):
             return IDASEN_CONFIG_PATH, 201
         else:
-            return IDASEN_CONFIG_PATH, 204
+            return IDASEN_CONFIG_PATH, 200
 
 @name_space.route("/toggle", methods=['POST'])
 class Toggle(Resource):
@@ -108,7 +109,7 @@ class Height(Resource):
     @name_space.doc(
         params={'position_name': "The position to move to"},
         responses={
-            200: "Moves desk to height specified for the given position",
+            202: "Moves desk to height specified for the given position",
             400: "Position Name argument is missing",
             404: "Position does not exist"
         })
@@ -119,7 +120,7 @@ class Height(Resource):
             return "Position {0} does not exist".format(position_name), 404
         else:
             move_desk_to_position(position_name)
-            return get_position_height(position_name), 200
+            return get_position_height(position_name), 202
 
 @name_space.route("/position", methods=['POST', 'DELETE'])
 class Position(Resource):
