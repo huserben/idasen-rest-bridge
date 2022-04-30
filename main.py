@@ -1,5 +1,5 @@
 from flask import Flask, request, abort
-from flask_restplus import Api, Resource
+from flask_restx import Api, Resource
 from idasen import cli
 from subprocess import Popen, PIPE
 import os
